@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-       xmlns:pages="clr-namespace:MauiApp1.Pages"
+       xmlns:views="clr-namespace:MauiApp1.Views"
        x:Class="MauiApp1.AppShell">
-
-    <ShellContent Title="Главная" ContentTemplate="{DataTemplate pages:MainPage}" />
+    <TabBar>
+        <ShellContent Title="Расходы" ContentTemplate="{DataTemplate views:MainPage}" />
+        <ShellContent Title="Доходы" ContentTemplate="{DataTemplate views:IncomePage}" />
+    </TabBar>
 </Shell>

@@ -1,14 +1,11 @@
 ﻿using SQLite;
 using MauiApp1.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MauiApp1.Services
 {
     public class ExpenseDatabase
     {
-        private readonly SQLiteAsyncConnection _database;
+        readonly SQLiteAsyncConnection _database;
 
         public ExpenseDatabase(string dbPath)
         {
@@ -16,32 +13,9 @@ namespace MauiApp1.Services
             _database.CreateTableAsync<Expense>().Wait();
         }
 
-        public Task<List<Expense>> GetExpensesAsync()
-        {
-            return _database.Table<Expense>().ToListAsync();
-        }
-
-        public Task<Expense> GetExpenseByIdAsync(int id)
-        {
-            return _database.Table<Expense>().FirstOrDefaultAsync(e => e.Id == id);
-        }
-
-        public Task<int> SaveExpenseAsync(Expense expense)
-        {
-            return expense.Id != 0
-                ? _database.UpdateAsync(expense)
-                : _database.InsertAsync(expense);
-        }
-
-        public Task<int> DeleteExpenseAsync(Expense expense)
-        {
-            return _database.DeleteAsync(expense);
-        }
-
-        public async Task<decimal> GetTotalAmountAsync()
-        {
-            var expenses = await GetExpensesAsync();
-            return expenses.Sum(e => e.Amount);
-        }
+        public Task<List<Expense>> GetItemsAsync() => _database.Table<Expense>().ToListAsync();
+        public Task<Expense> GetItemAsync(int id) => _database.Table<Expense>().Where(i => i.Id == id).FirstOrDefaultAsync();
+        public Task<int> SaveItemAsync(Expense item) => item.Id != 0 ? _database.UpdateAsync(item) : _database.InsertAsync(item);
+        public Task<int> DeleteItemAsync(Expense item) => _database.DeleteAsync(item);
     }
 }

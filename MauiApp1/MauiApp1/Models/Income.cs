@@ -2,7 +2,7 @@
 
 namespace MauiApp1.Models
 {
-    public class Expense
+    public class Income
     {
         public int Id { get; set; }
         public string Title { get; set; }

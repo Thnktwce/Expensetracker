@@ -4,15 +4,15 @@ namespace MauiApp1
 {
     public partial class App : Application
     {
-        public static ExpenseDatabase ExpenseDatabase { get; private set; }
+        static ExpenseDatabase expenseDatabase;
+        static IncomeDatabase incomeDatabase;
+
+        public static ExpenseDatabase ExpenseDatabase => expenseDatabase ??= new ExpenseDatabase(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "expenses.db3"));
+        public static IncomeDatabase IncomeDatabase => incomeDatabase ??= new IncomeDatabase(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "income.db3"));
 
         public App()
         {
             InitializeComponent();
-
-            string dbPath = Path.Combine(FileSystem.AppDataDirectory, "expenses.db3");
-            ExpenseDatabase = new ExpenseDatabase(dbPath);
-
             MainPage = new AppShell();
         }
     }
