@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp1.Pages.AddExpensePage"
+             Title="Добавить расход">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <Label Text="Название расхода:" />
+            <Entry x:Name="TitleEntry" Placeholder="Введите название" />
+
+            <Label Text="Сумма:" />
+            <Entry x:Name="AmountEntry" Placeholder="Введите сумму" Keyboard="Numeric" />
+
+            <Label Text="Дата:" />
+            <DatePicker x:Name="DatePicker" />
+
+            <Label Text="Комментарий:" />
+            <Editor x:Name="CommentEditor" Placeholder="Добавьте комментарий" AutoSize="TextChanges" />
+
+            <Button Text="Сохранить" Clicked="OnSaveClicked" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

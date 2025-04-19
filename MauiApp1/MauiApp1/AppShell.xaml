@@ -1,15 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<Shell
-    x:Class="MauiApp1.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:MauiApp1"
-    Shell.FlyoutBehavior="Flyout"
-    Title="MauiApp1">
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:pages="clr-namespace:MauiApp1.Pages"
+       x:Class="MauiApp1.AppShell">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
-
+    <ShellContent Title="Главная" ContentTemplate="{DataTemplate pages:MainPage}" />
 </Shell>

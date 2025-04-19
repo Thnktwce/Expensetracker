@@ -7,8 +7,13 @@ namespace MauiApp1.Models
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        public double Amount { get; set; }
-        public DateTime Date { get; set; }
-        public string Note { get; set; }
+
+        public string Title { get; set; } // Название
+
+        public decimal Amount { get; set; } // Сумма
+
+        public DateTime Date { get; set; } // Дата
+
+        public string Comment { get; set; } // Комментарий
     }
 }
