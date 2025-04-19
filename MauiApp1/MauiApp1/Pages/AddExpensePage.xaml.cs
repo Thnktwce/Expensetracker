@@ -13,24 +13,40 @@ namespace MauiApp1.Views
 
             if (_expense != null)
             {
-                TitleEntry.Text = _expense.Title;
+                NameEntry.Text = _expense.Name;
                 AmountEntry.Text = _expense.Amount.ToString();
-                CommentEditor.Text = _expense.Comment;
                 DatePicker.Date = _expense.Date;
+                DescriptionEditor.Text = _expense.Description;
+                CommentEditor.Text = _expense.Comment;
             }
         }
 
         private async void OnSaveClicked(object sender, EventArgs e)
         {
             if (_expense == null)
-                _expense = new Expense();
+            {
+                _expense = new Expense
+                {
+                    Name = NameEntry.Text,
+                    Amount = Convert.ToDecimal(AmountEntry.Text),
+                    Date = DatePicker.Date,
+                    Description = DescriptionEditor.Text,
+                    Comment = CommentEditor.Text
+                };
 
-            _expense.Title = TitleEntry.Text;
-            _expense.Amount = decimal.Parse(AmountEntry.Text);
-            _expense.Comment = CommentEditor.Text;
-            _expense.Date = DatePicker.Date;
+                await App.ExpenseDatabase.SaveItemAsync(_expense);
+            }
+            else
+            {
+                _expense.Name = NameEntry.Text;
+                _expense.Amount = Convert.ToDecimal(AmountEntry.Text);
+                _expense.Date = DatePicker.Date;
+                _expense.Description = DescriptionEditor.Text;
+                _expense.Comment = CommentEditor.Text;
 
-            await App.ExpenseDatabase.SaveItemAsync(_expense);
+                await App.ExpenseDatabase.UpdateItemAsync(_expense);
+            }
+
             await Navigation.PopAsync();
         }
     }

@@ -5,7 +5,7 @@ namespace MauiApp1.Services
 {
     public class IncomeDatabase
     {
-        readonly SQLiteAsyncConnection _database;
+        private readonly SQLiteAsyncConnection _database;
 
         public IncomeDatabase(string dbPath)
         {
@@ -13,9 +13,26 @@ namespace MauiApp1.Services
             _database.CreateTableAsync<Income>().Wait();
         }
 
-        public Task<List<Income>> GetItemsAsync() => _database.Table<Income>().ToListAsync();
-        public Task<Income> GetItemAsync(int id) => _database.Table<Income>().Where(i => i.Id == id).FirstOrDefaultAsync();
-        public Task<int> SaveItemAsync(Income item) => item.Id != 0 ? _database.UpdateAsync(item) : _database.InsertAsync(item);
-        public Task<int> DeleteItemAsync(Income item) => _database.DeleteAsync(item);
+        public Task<List<Income>> GetItemsAsync()
+        {
+            return _database.Table<Income>().OrderByDescending(i => i.Date).ToListAsync();
+        }
+
+        public Task<Income> GetItemAsync(int id)
+        {
+            return _database.Table<Income>().FirstOrDefaultAsync(i => i.Id == id);
+        }
+
+        public Task<int> SaveItemAsync(Income income)
+        {
+            if (income.Id != 0)
+                return _database.UpdateAsync(income);
+            return _database.InsertAsync(income);
+        }
+
+        public Task<int> DeleteItemAsync(Income income)
+        {
+            return _database.DeleteAsync(income);
+        }
     }
 }

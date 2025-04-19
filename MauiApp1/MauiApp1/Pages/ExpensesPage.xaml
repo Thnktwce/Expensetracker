@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp1.Views.ExpensesPage"
+             Title="Расходы">
+
+    <!-- Используем ScrollView для прокрутки содержимого -->
+    <ScrollView>
+        <VerticalStackLayout Padding="20">
+            <!-- Кнопка для добавления расхода -->
+            <Button Text="Добавить расход" Clicked="OnAddExpenseClicked" />
+
+            <!-- Список расходов -->
+            <CollectionView x:Name="ExpensesCollectionView" SelectionMode="Single" SelectedItem="{Binding SelectedExpense}" ItemsSource="{Binding Expenses}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Padding="10" Spacing="5">
+                            <Label Text="{Binding Name}" FontSize="Medium" />
+                            <Label Text="{Binding Amount, StringFormat='Сумма: {0:C}'}" />
+                            <Label Text="{Binding Date, StringFormat='Дата: {0:dd MMMM yyyy}'}" />
+                            <Label Text="{Binding Description}" />
+                            <Label Text="{Binding Comment}" />
+                            <HorizontalStackLayout>
+                                <Button Text="Редактировать" Clicked="OnEditExpenseClicked" />
+                                <Button Text="Удалить" Clicked="OnDeleteExpenseClicked" />
+                            </HorizontalStackLayout>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

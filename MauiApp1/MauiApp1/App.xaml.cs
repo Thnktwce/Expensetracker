@@ -1,18 +1,26 @@
 ﻿using MauiApp1.Services;
+using MauiApp1.Models;
 
 namespace MauiApp1
 {
     public partial class App : Application
     {
-        static ExpenseDatabase expenseDatabase;
-        static IncomeDatabase incomeDatabase;
-
-        public static ExpenseDatabase ExpenseDatabase => expenseDatabase ??= new ExpenseDatabase(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "expenses.db3"));
-        public static IncomeDatabase IncomeDatabase => incomeDatabase ??= new IncomeDatabase(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "income.db3"));
+        // Добавляем свойства для баз данных
+        public static ExpenseDatabase ExpenseDatabase { get; private set; }
+        public static IncomeDatabase IncomeDatabase { get; private set; }
 
         public App()
         {
             InitializeComponent();
+
+            // Инициализируем базу данных
+            string dbPath = Path.Combine(FileSystem.AppDataDirectory, "expenses.db3");
+
+            // Инициализация баз данных
+            ExpenseDatabase = new ExpenseDatabase(dbPath);
+            IncomeDatabase = new IncomeDatabase(dbPath);
+
+            // Устанавливаем главную страницу через AppShell
             MainPage = new AppShell();
         }
     }

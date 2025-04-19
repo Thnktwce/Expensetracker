@@ -4,34 +4,48 @@ namespace MauiApp1.Views
 {
     public partial class AddIncomePage : ContentPage
     {
-        private Income _income;
+        private Income currentIncome;
 
         public AddIncomePage(Income income = null)
         {
             InitializeComponent();
-            _income = income;
 
-            if (_income != null)
+            currentIncome = income;
+
+            if (currentIncome != null)
             {
-                TitleEntry.Text = _income.Title;
-                AmountEntry.Text = _income.Amount.ToString();
-                CommentEditor.Text = _income.Comment;
-                DatePicker.Date = _income.Date;
+                NameEntry.Text = currentIncome.Name;
+                AmountEntry.Text = currentIncome.Amount.ToString();
+                DescriptionEditor.Text = currentIncome.Description;
+                CommentEditor.Text = currentIncome.Comment;
+                DatePicker.Date = currentIncome.Date;
+            }
+            else
+            {
+                DatePicker.Date = DateTime.Now;
             }
         }
 
         private async void OnSaveClicked(object sender, EventArgs e)
         {
-            if (_income == null)
-                _income = new Income();
+            if (decimal.TryParse(AmountEntry.Text, out decimal amount))
+            {
+                if (currentIncome == null)
+                    currentIncome = new Income();
 
-            _income.Title = TitleEntry.Text;
-            _income.Amount = decimal.Parse(AmountEntry.Text);
-            _income.Comment = CommentEditor.Text;
-            _income.Date = DatePicker.Date;
+                currentIncome.Name = NameEntry.Text;
+                currentIncome.Amount = amount;
+                currentIncome.Description = DescriptionEditor.Text;
+                currentIncome.Comment = CommentEditor.Text;
+                currentIncome.Date = DatePicker.Date;
 
-            await App.IncomeDatabase.SaveItemAsync(_income);
-            await Navigation.PopAsync();
+                await App.IncomeDatabase.SaveItemAsync(currentIncome);
+                await Navigation.PopAsync();
+            }
+            else
+            {
+                await DisplayAlert("Ошибка", "Введите корректную сумму", "ОК");
+            }
         }
     }
 }

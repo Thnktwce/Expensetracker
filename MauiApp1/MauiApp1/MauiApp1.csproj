@@ -66,8 +66,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Pages\IncomesPage.xaml.cs">
-	    <DependentUpon>IncomesPage.xaml</DependentUpon>
+	  <Compile Update="Pages\ExpensesPage.xaml.cs">
+	    <DependentUpon>ExpensesPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\IncomePage.xaml.cs">
+	    <DependentUpon>IncomePage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
@@ -81,7 +84,10 @@
 	  <MauiXaml Update="Pages\MainPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Pages\IncomesPage.xaml">
+	  <MauiXaml Update="Pages\ExpensesPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\IncomePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
