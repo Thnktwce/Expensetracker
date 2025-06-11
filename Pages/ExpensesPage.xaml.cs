@@ -1,27 +1,52 @@
 using Expensetracker.Models;
-using Expensetracker.Views; // Убедитесь, что этот using есть
 
-namespace Expensetracker.Views
+namespace Expensetracker.Views;
+
+public partial class ExpensesPage : ContentPage
 {
-    public partial class ExpensesPage : ContentPage
+    public ExpensesPage()
     {
-        public ExpensesPage()
+        InitializeComponent();
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        // 1. Загружаем все категории
+        var categories = await App.CategoryDatabase.GetCategoriesAsync();
+        // Преобразуем в словарь для быстрого поиска: {Id => Name}
+        var categoryMap = categories.ToDictionary(c => c.Id, c => c.Name);
+
+        // 2. Загружаем все расходы
+        var expenses = await App.ExpenseDatabase.GetItemsAsync();
+
+        // 3. Для каждого расхода находим и присваиваем имя категории
+        foreach (var expense in expenses)
         {
-            InitializeComponent();
+            // Используем .GetValueOrDefault() на случай, если категория была удалена
+            expense.CategoryName = categoryMap.GetValueOrDefault(expense.CategoryId, "Без категории");
         }
 
-        protected override async void OnAppearing()
-        {
-            base.OnAppearing();
-            // Обновляем список расходов при каждом открытии страницы
-            expensesCollectionView.ItemsSource = await App.ExpenseDatabase.GetItemsAsync();
-        }
+        // 4. Отображаем обновленный список в CollectionView
+        expensesCollectionView.ItemsSource = expenses;
+    }
 
-        // ВОТ НЕДОСТАЮЩИЙ МЕТОД, КОТОРЫЙ ИЩЕТ ВАШ XAML
-        private async void OnAddExpenseClicked(object sender, EventArgs e)
+    // ... остальные методы (OnAddExpenseClicked, OnSelectionChanged) остаются без изменений ...
+    private async void OnAddExpenseClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(AddExpensePage));
+    }
+
+    private async void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (e.CurrentSelection.FirstOrDefault() is Expense selectedExpense)
         {
-            // Переходим на страницу добавления нового расхода
-            await Shell.Current.GoToAsync(nameof(AddExpensePage));
+            await Shell.Current.GoToAsync(nameof(AddExpensePage), true, new Dictionary<string, object>
+            {
+                { "Expense", selectedExpense }
+            });
+            ((CollectionView)sender).SelectedItem = null;
         }
     }
 }

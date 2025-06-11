@@ -1,76 +1,91 @@
 using Expensetracker.Models;
+using System.Collections.ObjectModel; // Необходим для ObservableCollection
 
-namespace Expensetracker.Views
+namespace Expensetracker.Views;
+
+[QueryProperty(nameof(CurrentExpense), "Expense")]
+public partial class AddExpensePage : ContentPage
 {
-    public partial class AddExpensePage : ContentPage
+    public Expense CurrentExpense { get; set; }
+
+    // Коллекция для хранения списка категорий для Picker'a
+    public ObservableCollection<Category> Categories { get; set; }
+
+    public AddExpensePage()
     {
-        // Храним текущий расход для редактирования
-        private readonly Expense? _existingExpense;
+        InitializeComponent();
+        Categories = new ObservableCollection<Category>();
+        // Устанавливаем контекст привязки на саму страницу
+        BindingContext = this;
+    }
 
-        // Конструктор принимает существующий расход (если мы редактируем) или null (если создаем новый)
-        public AddExpensePage(Expense? expense = null)
+    protected override async void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        base.OnNavigatedTo(args);
+
+        // Загружаем список категорий
+        await LoadCategories();
+
+        CurrentExpense ??= new Expense { Date = DateTime.Now };
+
+        // Если мы редактируем существующий расход, находим и устанавливаем его категорию
+        if (CurrentExpense.Id != 0)
         {
-            InitializeComponent();
-
-            _existingExpense = expense;
-
-            // Если мы редактируем существующий расход, заполняем поля его данными
-            if (_existingExpense != null)
+            var selectedCategory = Categories.FirstOrDefault(c => c.Id == CurrentExpense.CategoryId);
+            if (selectedCategory != null)
             {
-                NameEntry.Text = _existingExpense.Name;
-                AmountEntry.Text = _existingExpense.Amount.ToString();
-                DatePicker.Date = _existingExpense.Date;
-                DescriptionEditor.Text = _existingExpense.Description;
-                CommentEditor.Text = _existingExpense.Comment;
-            }
-            // Если создаем новый, просто ставим сегодняшнюю дату
-            else
-            {
-                DatePicker.Date = DateTime.Now;
+                CategoryPicker.SelectedItem = selectedCategory;
             }
         }
 
-        private async void OnSaveClicked(object sender, EventArgs e)
+        // Обновляем BindingContext, чтобы XAML увидел изменения
+        OnPropertyChanged(nameof(CurrentExpense));
+        DeleteButton.IsVisible = CurrentExpense.Id != 0;
+    }
+
+    private async Task LoadCategories()
+    {
+        var categoriesFromDb = await App.CategoryDatabase.GetCategoriesAsync();
+        Categories.Clear();
+        foreach (var category in categoriesFromDb)
         {
-            // 1. Проверяем, что название не пустое
-            if (string.IsNullOrWhiteSpace(NameEntry.Text))
-            {
-                await DisplayAlert("Ошибка", "Пожалуйста, введите название расхода.", "ОК");
-                return;
-            }
+            Categories.Add(category);
+        }
+    }
 
-            // 2. Безопасно проверяем и преобразуем сумму
-            if (!decimal.TryParse(AmountEntry.Text, out decimal amount) || amount <= 0)
-            {
-                await DisplayAlert("Ошибка", "Пожалуйста, введите корректную сумму больше нуля.", "ОК");
-                return;
-            }
+    private async void OnSaveClicked(object sender, EventArgs e)
+    {
+        // Присваиваем ID выбранной категории нашему расходу
+        if (CategoryPicker.SelectedItem is Category selectedCategory)
+        {
+            CurrentExpense.CategoryId = selectedCategory.Id;
+        }
 
-            // 3. Создаем или обновляем объект
-            Expense expenseToSave;
+        if (string.IsNullOrWhiteSpace(CurrentExpense.Name) || CurrentExpense.Amount is null or <= 0)
+        {
+            await DisplayAlert("Ошибка", "Введите название и сумму больше нуля.", "ОК");
+            return;
+        }
 
-            if (_existingExpense != null)
-            {
-                // Если мы редактировали, используем существующий объект
-                expenseToSave = _existingExpense;
-            }
-            else
-            {
-                // Если создавали новый, создаем новый объект
-                expenseToSave = new Expense();
-            }
+        if (CurrentExpense.CategoryId == 0)
+        {
+            await DisplayAlert("Ошибка", "Пожалуйста, выберите категорию.", "ОК");
+            return;
+        }
 
-            // Заполняем объект данными из полей
-            expenseToSave.Name = NameEntry.Text;
-            expenseToSave.Amount = amount;
-            expenseToSave.Date = DatePicker.Date;
-            expenseToSave.Description = DescriptionEditor.Text;
-            expenseToSave.Comment = CommentEditor.Text;
+        await App.ExpenseDatabase.SaveItemAsync(CurrentExpense);
+        await Shell.Current.GoToAsync("..");
+    }
 
-            // 4. Сохраняем в базу данных
-            await App.ExpenseDatabase.SaveItemAsync(expenseToSave);
+    private async void OnDeleteClicked(object sender, EventArgs e)
+    {
+        if (CurrentExpense == null) return;
 
-            // 5. Возвращаемся на предыдущую страницу
+        bool isConfirmed = await DisplayAlert("Подтверждение", "Вы уверены?", "Да", "Нет");
+
+        if (isConfirmed)
+        {
+            await App.ExpenseDatabase.DeleteItemAsync(CurrentExpense);
             await Shell.Current.GoToAsync("..");
         }
     }

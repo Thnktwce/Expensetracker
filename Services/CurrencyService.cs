@@ -1,21 +1,26 @@
-﻿using Microsoft.Maui.Storage;
-
-public class CurrencyService
+﻿namespace Expensetracker.Services
 {
-    // Устанавливаем валюту по умолчанию как "USD"
-    public static string SelectedCurrency { get; set; } = "USD";
-
-    // Метод для установки валюты
-    public static void SetCurrency(string currency)
+    public static class CurrencyService
     {
-        SelectedCurrency = currency;
-        // Сохраняем в Preferences для постоянства
-        Preferences.Set("SelectedCurrency", currency);
-    }
+        private static string _selectedCurrency = "USD";
 
-    // Метод для получения текущей валюты
-    public static string GetCurrency()
-    {
-        return Preferences.Get("SelectedCurrency", "USD"); // Возвращаем валюту из настроек
+        public static void Init()
+        {
+            _selectedCurrency = Preferences.Get("SelectedCurrency", "USD");
+        }
+
+        public static void SetCurrency(string currency)
+        {
+            if (!string.IsNullOrEmpty(currency))
+            {
+                _selectedCurrency = currency;
+                Preferences.Set("SelectedCurrency", currency);
+            }
+        }
+
+        public static string GetCurrency()
+        {
+            return _selectedCurrency;
+        }
     }
 }

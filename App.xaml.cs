@@ -1,32 +1,30 @@
 ﻿using Expensetracker.Services;
 
-namespace Expensetracker;
-
-public partial class App : Application
+namespace Expensetracker
 {
-    private static ExpenseDatabase? _expenseDatabase;
-    public static ExpenseDatabase ExpenseDatabase
+    public partial class App : Application
     {
-        get
-        {
-            _expenseDatabase ??= new ExpenseDatabase();
-            return _expenseDatabase;
-        }
-    }
+        // Свойство для доступа к базе расходов
+        private static ExpenseDatabase? _expenseDatabase;
+        public static ExpenseDatabase ExpenseDatabase => _expenseDatabase ??= new ExpenseDatabase();
 
-    private static IncomeDatabase? _incomeDatabase;
-    public static IncomeDatabase IncomeDatabase
-    {
-        get
-        {
-            _incomeDatabase ??= new IncomeDatabase();
-            return _incomeDatabase;
-        }
-    }
+        // Свойство для доступа к базе доходов
+        private static IncomeDatabase? _incomeDatabase;
+        public static IncomeDatabase IncomeDatabase => _incomeDatabase ??= new IncomeDatabase();
 
-    public App()
-    {
-        InitializeComponent();
-        MainPage = new AppShell();
+        // Свойство для доступа к базе категорий
+        private static CategoryDatabase? _categoryDatabase;
+        public static CategoryDatabase CategoryDatabase => _categoryDatabase ??= new CategoryDatabase();
+
+        public App()
+        {
+            InitializeComponent();
+
+            // Инициализируем сервис для работы с валютой
+            CurrencyService.Init();
+
+            // Устанавливаем стартовую страницу
+            MainPage = new AppShell();
+        }
     }
 }

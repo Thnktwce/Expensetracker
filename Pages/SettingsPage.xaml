@@ -3,21 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Expensetracker.Views.SettingsPage"
              Title="Настройки">
-
     <VerticalStackLayout Padding="20" Spacing="10">
-
-        <Label Text="Выберите валюту" 
-               FontSize="18"
-               FontAttributes="Bold"/>
-
-        <Picker x:Name="CurrencyPicker" 
-                SelectedIndexChanged="OnCurrencyChanged">
+        <Label Text="Выберите валюту" FontSize="18" FontAttributes="Bold"/>
+        <Picker x:Name="CurrencyPicker" SelectedIndexChanged="OnCurrencyChanged">
             <Picker.Items>
                 <x:String>USD</x:String>
                 <x:String>EUR</x:String>
                 <x:String>RUB</x:String>
             </Picker.Items>
         </Picker>
-
     </VerticalStackLayout>
 </ContentPage>

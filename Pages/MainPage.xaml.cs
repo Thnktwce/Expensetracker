@@ -1,6 +1,7 @@
 using Expensetracker.Services;
-using Expensetracker.Models;
+using Expensetracker.Views;
 
+// Оборачиваем класс в правильное пространство имен
 namespace Expensetracker.Views
 {
     public partial class MainPage : ContentPage
@@ -13,12 +14,6 @@ namespace Expensetracker.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-
-            if (CurrencyPicker.SelectedItem == null)
-            {
-                CurrencyPicker.SelectedItem = CurrencyService.GetCurrency();
-            }
-
             await UpdateUiAsync();
         }
 
@@ -27,30 +22,17 @@ namespace Expensetracker.Views
             var expenses = await App.ExpenseDatabase.GetItemsAsync();
             var incomes = await App.IncomeDatabase.GetItemsAsync();
 
-            decimal totalExpenses = expenses.Sum(e => e.Amount);
-            decimal totalIncomes = incomes.Sum(i => i.Amount);
+            // Используем оператор ?? 0m, чтобы обработать возможный null
+            decimal totalExpenses = expenses.Sum(e => e.Amount) ?? 0m;
+            decimal totalIncomes = incomes.Sum(i => i.Amount) ?? 0m;
 
             var selectedCurrency = CurrencyService.GetCurrency();
 
-            TotalExpensesLabel.Text = $"{totalExpenses:F2} {selectedCurrency}";
-            TotalIncomesLabel.Text = $"{totalIncomes:F2} {selectedCurrency}";
+            TotalIncomesLabel.Text = $"+{totalIncomes:F2} {selectedCurrency}";
+            TotalExpensesLabel.Text = $"-{totalExpenses:F2} {selectedCurrency}";
         }
 
-        private async void CurrencyPicker_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // ЗАЩИТА ОТ СБОЯ ПРИ ПЕРВОЙ ЗАГРУЗКЕ
-            if (CurrencyPicker == null || CurrencyPicker.SelectedItem == null)
-            {
-                return; // Ничего не делаем, если страница еще не готова
-            }
-
-            if (CurrencyPicker.SelectedItem is string currency)
-            {
-                CurrencyService.SetCurrency(currency);
-                await UpdateUiAsync();
-            }
-        }
-
+        // ... все остальные ваши методы OnClicked ...
         private async void OnAddExpenseClicked(object sender, EventArgs e)
         {
             await Shell.Current.GoToAsync(nameof(AddExpensePage));
@@ -59,6 +41,25 @@ namespace Expensetracker.Views
         private async void OnAddIncomeClicked(object sender, EventArgs e)
         {
             await Shell.Current.GoToAsync(nameof(AddIncomePage));
+        }
+
+        private async void OnViewExpensesClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync(nameof(ExpensesPage));
+        }
+
+        private async void OnViewIncomesClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync(nameof(IncomesPage));
+        }
+
+        private async void OnSettingsClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync(nameof(SettingsPage));
+        }
+        private async void OnViewChartsClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync(nameof(ChartsPage));
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Expensetracker.Services
 
         public Task<List<Expense>> GetItemsAsync()
         {
-            return _database.Table<Expense>().ToListAsync();
+            return _database.Table<Expense>().OrderByDescending(e => e.Date).ToListAsync();
         }
 
         public Task<int> SaveItemAsync(Expense item)

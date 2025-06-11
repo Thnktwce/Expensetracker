@@ -1,64 +1,58 @@
 using Expensetracker.Models;
 
-namespace Expensetracker.Views
+namespace Expensetracker.Views;
+
+[QueryProperty(nameof(Income), "Income")]
+public partial class AddIncomePage : ContentPage
 {
-    public partial class AddIncomePage : ContentPage
+    public Income Income { get; set; }
+
+    public AddIncomePage()
     {
-        // Храним существующий доход для редактирования
-        private readonly Income? _existingIncome;
+        InitializeComponent();
+    }
 
-        public AddIncomePage(Income? income = null)
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        base.OnNavigatedTo(args);
+
+        Income ??= new Income();
+        BindingContext = Income;
+
+        DeleteButton.IsVisible = Income.Id != 0;
+
+        if (Income.Id == 0)
         {
-            InitializeComponent();
+            Income.Date = DateTime.Now;
+        }
+    }
 
-            _existingIncome = income;
+    private async void OnSaveClicked(object sender, EventArgs e)
+    {
+        var incomeToSave = BindingContext as Income;
+        if (incomeToSave == null) return;
 
-            // Если мы редактируем, заполняем поля на экране
-            if (_existingIncome != null)
-            {
-                NameEntry.Text = _existingIncome.Name;
-                AmountEntry.Text = _existingIncome.Amount.ToString();
-                DatePicker.Date = _existingIncome.Date;
-                DescriptionEditor.Text = _existingIncome.Description;
-                CommentEditor.Text = _existingIncome.Comment;
-            }
-            // Если создаем новый, ставим сегодняшнюю дату
-            else
-            {
-                DatePicker.Date = DateTime.Now;
-            }
+        // Обновляем проверку: Amount не должен быть null И должен быть больше нуля
+        if (string.IsNullOrWhiteSpace(incomeToSave.Name) || !incomeToSave.Amount.HasValue || incomeToSave.Amount.Value <= 0)
+        {
+            await DisplayAlert("Ошибка", "Пожалуйста, введите название и сумму больше нуля.", "ОК");
+            return;
         }
 
-        private async void OnSaveClicked(object sender, EventArgs e)
+        await App.IncomeDatabase.SaveItemAsync(incomeToSave);
+        await Shell.Current.GoToAsync("..");
+    }
+
+    private async void OnDeleteClicked(object sender, EventArgs e)
+    {
+        var incomeToDelete = BindingContext as Income;
+        if (incomeToDelete == null) return;
+
+        bool isConfirmed = await DisplayAlert("Подтверждение", "Вы уверены, что хотите удалить эту запись?", "Да", "Нет");
+
+        if (isConfirmed)
         {
-            // 1. Проверяем название
-            if (string.IsNullOrWhiteSpace(NameEntry.Text))
-            {
-                await DisplayAlert("Ошибка", "Пожалуйста, введите название дохода.", "ОК");
-                return;
-            }
-
-            // 2. Безопасно проверяем сумму
-            if (!decimal.TryParse(AmountEntry.Text, out decimal amount) || amount <= 0)
-            {
-                await DisplayAlert("Ошибка", "Пожалуйста, введите корректную сумму больше нуля.", "ОК");
-                return;
-            }
-
-            // 3. Создаем новый объект или используем существующий для обновления
-            Income incomeToSave = _existingIncome ?? new Income();
-
-            // 4. Заполняем объект данными с экрана
-            incomeToSave.Name = NameEntry.Text;
-            incomeToSave.Amount = amount;
-            incomeToSave.Date = DatePicker.Date;
-            incomeToSave.Description = DescriptionEditor.Text;
-            incomeToSave.Comment = CommentEditor.Text;
-
-            // 5. Сохраняем в базу данных
-            await App.IncomeDatabase.SaveItemAsync(incomeToSave);
-
-            // 6. Возвращаемся назад
+            await App.IncomeDatabase.DeleteItemAsync(incomeToDelete);
             await Shell.Current.GoToAsync("..");
         }
     }

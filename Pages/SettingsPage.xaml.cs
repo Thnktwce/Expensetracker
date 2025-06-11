@@ -1,6 +1,6 @@
-using Expensetracker.Services; // <-- Правильный using
+using Expensetracker.Services;
 
-namespace Expensetracker.Views // <-- Правильное пространство имен
+namespace Expensetracker.Views
 {
     public partial class SettingsPage : ContentPage
     {
@@ -12,7 +12,6 @@ namespace Expensetracker.Views // <-- Правильное пространство имен
 
         private void OnCurrencyChanged(object sender, EventArgs e)
         {
-            // Сразу сохраняем при выборе, кнопка не нужна
             if (CurrencyPicker.SelectedItem is string selectedCurrency)
             {
                 CurrencyService.SetCurrency(selectedCurrency);

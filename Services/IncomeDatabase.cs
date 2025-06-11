@@ -1,5 +1,7 @@
-﻿using Expensetracker.Models; // <-- Исправлено с MauiApp1 на Expensetracker
+﻿using Expensetracker.Models;
 using SQLite;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Expensetracker.Services
 {
@@ -16,7 +18,7 @@ namespace Expensetracker.Services
 
         public Task<List<Income>> GetItemsAsync()
         {
-            return _database.Table<Income>().ToListAsync();
+            return _database.Table<Income>().OrderByDescending(i => i.Date).ToListAsync();
         }
 
         public Task<int> SaveItemAsync(Income item)
@@ -29,6 +31,11 @@ namespace Expensetracker.Services
             {
                 return _database.InsertAsync(item);
             }
+        }
+
+        public Task<int> DeleteItemAsync(Income item)
+        {
+            return _database.DeleteAsync(item);
         }
     }
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:micro="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             x:Class="Expensetracker.Views.ChartsPage"
+             Title="Аналитика">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="10" Spacing="15">
+
+            <Picker x:Name="ChartTypePicker" Title="Выберите график" SelectedIndexChanged="ChartTypePicker_SelectedIndexChanged">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Расходы по категориям</x:String>
+                        <x:String>Доходы vs Расходы (по месяцам)</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+                <Picker.SelectedIndex>0</Picker.SelectedIndex>
+            </Picker>
+
+            <micro:ChartView x:Name="chartView"
+                             HeightRequest="350"
+                             HorizontalOptions="FillAndExpand"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

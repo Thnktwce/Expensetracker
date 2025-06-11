@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:Expensetracker.Models"
+             x:Class="Expensetracker.Views.IncomesPage"
+             Title="Мои Доходы">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Добавить" Clicked="OnAddIncomeClicked" />
+    </ContentPage.ToolbarItems>
+
+    <CollectionView x:Name="incomesCollectionView"
+                    Margin="10"
+                    SelectionMode="Single"
+                    SelectionChanged="OnSelectionChanged">
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="models:Income">
+                <Frame Padding="10" Margin="0,5" CornerRadius="8" BorderColor="LightGray">
+                    <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                        <Label Grid.Column="0" Grid.Row="0" Text="{Binding Name}" FontSize="16" FontAttributes="Bold" />
+                        <Label Grid.Column="1" Grid.Row="0" Text="{Binding Amount, StringFormat='+{0:F2}'}" FontSize="16" FontAttributes="Bold" TextColor="Green" />
+                        <Label Grid.Column="0" Grid.Row="1" Text="{Binding Date, StringFormat='{0:dd.MM.yyyy}'}" FontSize="12" TextColor="Gray" />
+                    </Grid>
+                </Frame>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+        <CollectionView.EmptyView>
+            <Label Text="Список доходов пуст." HorizontalOptions="Center" VerticalOptions="Center" />
+        </CollectionView.EmptyView>
+    </CollectionView>
+</ContentPage>

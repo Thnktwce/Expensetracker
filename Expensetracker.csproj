@@ -60,13 +60,48 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microcharts.Maui" Version="1.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.0" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
 	</ItemGroup>
-
 	<ItemGroup>
-	  <Folder Include="Pages\" />
+		<Compile Update="Pages\AddExpensePage.xaml.cs">
+			<DependentUpon>AddExpensePage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\AddIncomePage.xaml.cs">
+			<DependentUpon>AddIncomePage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\ExpensesPage.xaml.cs">
+			<DependentUpon>ExpensesPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\IncomesPage.xaml.cs">
+		  <DependentUpon>IncomesPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\IncomesPage.xaml.cs">
+			<DependentUpon>IncomesPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\MainPage.xaml.cs">
+			<DependentUpon>MainPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\ChartsPage.xaml.cs">
+		  <DependentUpon>ChartsPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Pages\SettingsPage.xaml.cs">
+			<DependentUpon>SettingsPage.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="App.xaml.cs">
+			<DependentUpon>App.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="AppShell.xaml.cs">
+			<DependentUpon>AppShell.xaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	<ItemGroup>
+	  <MauiXaml Update="Pages\ChartsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 
 </Project>
